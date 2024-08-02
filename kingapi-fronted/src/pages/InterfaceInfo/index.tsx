@@ -1,62 +1,20 @@
-import {addRule, removeRule} from '@/services/ant-design-pro/api';
 import {PlusOutlined} from '@ant-design/icons';
 import type {ActionType, ProColumns, ProDescriptionsItemProps} from '@ant-design/pro-components';
 import {FooterToolbar, PageContainer, ProDescriptions, ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';
-import {Button, Drawer, Input, message} from 'antd';
+import {Button, Drawer, message} from 'antd';
 import React, {useRef, useState} from 'react';
-import UpdateForm from './components/UpdateForm';
 import {
   addInterfaceInfoUsingPost,
-  listInterfaceInfoByPageUsingGet
+  deleteInterfaceInfoUsingPost,
+  listInterfaceInfoByPageUsingGet,
+  updateInterfaceInfoUsingPost
 } from "@/services/kingapi-backend/interfaceInfoController";
 import type {SortOrder} from "antd/lib/table/interface";
 import CreateModal from "@/pages/InterfaceInfo/components/CreateModal";
-
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
-const handleAdd = async (fields: API.RuleListItem) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addRule({
-      ...fields,
-    });
-    hide();
-    message.success('Added successfully');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Adding failed, please try again!');
-    return false;
-  }
-};
+import UpdateModal from "@/pages/InterfaceInfo/components/UpdateModal";
 
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('Deleted successfully and will refresh soon');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Delete failed, please try again');
-    return false;
-  }
-};
 const TableList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -74,13 +32,12 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
 
   /**
-   * @en-US Update node
-   * @zh-CN 更新节点
-   *
+   * @en-US Add node
+   * @zh-CN 添加节点
    * @param fields
    */
-  const handleUpdate = async (fields: API.InterfaceInfo) => {
-    const hide = message.loading('Configuring');
+  const handleAdd = async (fields: API.InterfaceInfo) => {
+    const hide = message.loading('正在添加');
     try {
       await addInterfaceInfoUsingPost({
         ...fields,
@@ -91,11 +48,56 @@ const TableList: React.FC = () => {
       return true;
     } catch (error: any) {
       hide();
-      message.error('创建失败', error.message);
+      message.error('创建失败' + error.message);
       return false;
     }
   };
 
+  /**
+   * @en-US Update node
+   * @zh-CN 更新节点
+   *
+   * @param fields
+   */
+  const handleUpdate = async (fields: API.InterfaceInfo) => {
+    const hide = message.loading('修改中');
+    try {
+      await updateInterfaceInfoUsingPost({
+        ...fields,
+      });
+      hide();
+      message.success('操作成功');
+      handleModalVisible(false);
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error('操作失败', error.message);
+      return false;
+    }
+  };
+  /**
+   *  Delete node
+   * @zh-CN 删除节点
+   *
+   * @param selectedRows
+   */
+  const handleRemove = async (record: API.InterfaceInfo) => {
+    const hide = message.loading('正在删除');
+    if (!record) return true;
+    try {
+      await deleteInterfaceInfoUsingPost({
+       id:record.id
+      });
+      hide();
+      message.success('删除成功');
+      actionRef.current?.reload();
+      return true;
+    } catch (error:any) {
+      hide();
+      message.error('删除失败,'+error.message);
+      return false;
+    }
+  };
 
   /**
    * @en-US International configuration
@@ -111,7 +113,22 @@ const TableList: React.FC = () => {
     {
       title: '接口名称',
       dataIndex: 'name',
-      valueType: 'text'
+      valueType: 'text',
+      formItemProps: {
+        rules: [{
+          required: true,
+        }]
+      }
+    },
+    {
+      title: 'url',
+      dataIndex: 'url',
+      valueType: 'text',
+      formItemProps: {
+        rules: [{
+          required: true,
+        }]
+      }
     },
     {
       title: '描述',
@@ -122,26 +139,36 @@ const TableList: React.FC = () => {
       title: '请求方法',
       dataIndex: 'method',
       valueType: 'text',
+      formItemProps: {
+        rules: [{
+          required: true,
+        }]
+      }
     },
     {
       title: '请求头',
       dataIndex: 'requestHeader',
       valueType: 'textarea',
+      formItemProps: {
+        rules: [{
+          required: true,
+        }]
+      }
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
       valueType: 'textarea',
+      formItemProps: {
+        rules: [{
+          required: true,
+        }]
+      }
     },
-    {
-      title: 'url',
-      dataIndex: 'url',
-      valueType: 'text',
-    },
+
     {
       title: '状态',
       dataIndex: 'status',
-      hideInForm: true,
       valueEnum: {
         0: {
           text: '关闭',
@@ -179,6 +206,14 @@ const TableList: React.FC = () => {
         >
           修改
         </a>,
+        <a
+          key="config"
+          onClick={() => {
+            handleRemove(record);
+          }}
+        >
+          删除
+        </a>,
       ],
     },
   ];
@@ -206,7 +241,7 @@ const TableList: React.FC = () => {
           pageSize?: number;
           current?: number;
           keyword?: string;
-        }, sort: Record<string, SortOrder>, filter: Record<string, (string | number)[] | null>) => {
+        }, sort: Record<string, SortOrder>, filter: Record<string, React.ReactText[]|null>) => {
           const res: any = await listInterfaceInfoByPageUsingGet({
             ...params
           })
@@ -214,7 +249,7 @@ const TableList: React.FC = () => {
             return {
               data: res.data.records || [],
               success: true,
-              total: res.total
+              total: res.total,
             }
           } else {
             return {
@@ -264,7 +299,8 @@ const TableList: React.FC = () => {
       )
       }
 
-      <UpdateForm
+      <UpdateModal
+        columns={columns}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
@@ -281,7 +317,7 @@ const TableList: React.FC = () => {
             setCurrentRow(undefined);
           }
         }}
-        updateModalOpen={updateModalVisible}
+        visible={updateModalVisible}
         values={currentRow || {}}
       />
 

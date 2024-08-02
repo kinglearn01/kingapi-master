@@ -1,5 +1,5 @@
 import type {ProColumns} from '@ant-design/pro-components';
-import { ProTable,} from '@ant-design/pro-components';
+import {ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';
 import {Modal} from "antd";
 import React from 'react';
@@ -13,8 +13,7 @@ export type Props = {
 
 const CreateModal: React.FC<Props> = (props) => {
   const {columns, visible, onCancel, onSubmit} = props;
-  return
-  <Modal visible={visible} onCancel={() => onCancel?.()}>
+  return ( <Modal visible={visible} onCancel={() => onCancel?.()}>
     <ProTable type="form"
               columns={columns}
               onSubmit={
@@ -22,6 +21,6 @@ const CreateModal: React.FC<Props> = (props) => {
                   onSubmit?.(value);
                 }
               }/>
-  </Modal>;
+  </Modal>);
 };
 export default CreateModal;
