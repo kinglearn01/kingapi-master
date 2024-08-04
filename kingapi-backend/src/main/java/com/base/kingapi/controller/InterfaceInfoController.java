@@ -18,6 +18,8 @@ import com.base.kingapi.model.entity.User;
 import com.base.kingapi.model.enums.InterfaceInfoStatusEnum;
 import com.base.kingapi.service.InterfaceInfoService;
 import com.base.kingapi.service.UserService;
+import com.google.gson.Gson;
+import java.awt.datatransfer.Clipboard;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.kingapi.kingapiclientsdk.client.KingApiClient;
@@ -256,21 +258,31 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/invoke")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> offLineInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest, HttpServletRequest request) {
+//    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest, HttpServletRequest request) {
         if (interfaceInfoInvokeRequest==null||interfaceInfoInvokeRequest.getId() <= 0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        Long id = interfaceInfoInvokeRequest.getId();
+        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
+
         //判断是否存在
         InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
         if (oldInterfaceInfo == null){
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
+        if (oldInterfaceInfo.getStatus()==InterfaceInfoStatusEnum.OFFLINE.getValue()){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"接口已关闭");
+        }
 
-        InterfaceInfo interfaceInfo = new InterfaceInfo();
-        interfaceInfo.setId(id);
-        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
-        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+        KingApiClient tempClint = new KingApiClient(accessKey, secretKey);
+        Gson gson = new Gson();
+        org.kingapi.kingapiclientsdk.model.User user = gson.fromJson(userRequestParams, org.kingapi.kingapiclientsdk.model.User.class);
+        String result = tempClint.restfulName(user);
+
         return ResultUtils.success(result);
     }
 
