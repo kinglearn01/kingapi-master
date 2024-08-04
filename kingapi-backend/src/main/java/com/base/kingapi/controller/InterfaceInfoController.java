@@ -4,24 +4,23 @@ import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.base.kingapi.annotation.AuthCheck;
-import com.base.kingapi.common.BaseResponse;
-import com.base.kingapi.common.DeleteRequest;
-import com.base.kingapi.common.ErrorCode;
-import com.base.kingapi.common.ResultUtils;
+import com.base.kingapi.common.*;
 import com.base.kingapi.constant.CommonConstant;
 import com.base.kingapi.constant.UserConstant;
 import com.base.kingapi.exception.BusinessException;
 import com.base.kingapi.exception.ThrowUtils;
 import com.base.kingapi.model.dto.interfaceinfo.InterfaceInfoAddRequest;
+import com.base.kingapi.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import com.base.kingapi.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.base.kingapi.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.base.kingapi.model.entity.InterfaceInfo;
 import com.base.kingapi.model.entity.User;
-import com.base.kingapi.model.vo.InterfaceInfoVO;
+import com.base.kingapi.model.enums.InterfaceInfoStatusEnum;
 import com.base.kingapi.service.InterfaceInfoService;
 import com.base.kingapi.service.UserService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.kingapi.kingapiclientsdk.client.KingApiClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +40,8 @@ public class InterfaceInfoController {
 
     @Resource
     private InterfaceInfoService interfaceInfoService;
+    @Resource
+    private KingApiClient kingApiClient;
 
     @Resource
     private UserService userService;
@@ -102,7 +103,7 @@ public class InterfaceInfoController {
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest interfaceInfoUpdateRequest) {
+    public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest interfaceInfoUpdateRequest, HttpServletRequest request) {
         if (interfaceInfoUpdateRequest == null || interfaceInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -110,10 +111,17 @@ public class InterfaceInfoController {
         BeanUtils.copyProperties(interfaceInfoUpdateRequest, interfaceInfo);
         // 参数校验
         interfaceInfoService.validInterfaceInfo(interfaceInfo, false);
+         User loginUser = userService.getLoginUser(request);
+
         long id = interfaceInfoUpdateRequest.getId();
         // 判断是否存在
         InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-        ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
+        if (oldInterfaceInfo == null){
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        if (!oldInterfaceInfo.getUserId().equals(loginUser.getId())&&!userService.isAdmin(request)){
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
     }
@@ -185,7 +193,86 @@ public class InterfaceInfoController {
         Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size), queryWrapper);
         return ResultUtils.success(interfaceInfoPage);
     }
+    /**
+     * 发布
+     * @param idRequest
+     * @return
+     */
+    @PostMapping("/online")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> onLineInterfaceInfo(@RequestBody IdRequest idRequest, HttpServletRequest request) {
+        if (idRequest==null||idRequest.getId()<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = idRequest.getId();
+        //判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null){
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        //判断该接口是否可以调用
+        org.kingapi.kingapiclientsdk.model.User user = new org.kingapi.kingapiclientsdk.model.User();
+        user.setName("text");
+        String username = kingApiClient.restfulName(user);
+        if (!StringUtils.isNotBlank(username)){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"接口认证失败");
+        }
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
 
+    /**
+     * 下线
+     * @param idRequest
+     * @return
+     */
+    @PostMapping("/offline")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> offLineInterfaceInfo(@RequestBody IdRequest idRequest, HttpServletRequest request) {
+        if (idRequest==null||idRequest.getId()<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = idRequest.getId();
+        //判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null){
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     *
+     * @param interfaceInfoInvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/invoke")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> offLineInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest, HttpServletRequest request) {
+        if (interfaceInfoInvokeRequest==null||interfaceInfoInvokeRequest.getId() <= 0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null){
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
 
 
 }

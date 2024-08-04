@@ -1,8 +1,7 @@
-package org.kingapi.kingapiinterface.Utils;
+package org.kingapi.kingapiclientsdk.Utils;
 
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
-import java.util.Map;
 
 /**
  * ClassName:SignUtil

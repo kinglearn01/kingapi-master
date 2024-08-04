@@ -1,9 +1,6 @@
-package org.kingapi.kingapiinterface.client;
+package org.kingapi.kingapiclientsdk.client;
 
-import cn.hutool.Hutool;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.DigestAlgorithm;
-import cn.hutool.crypto.digest.Digester;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -11,11 +8,10 @@ import cn.hutool.json.JSONUtil;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import org.kingapi.kingapiinterface.model.User;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.kingapi.kingapiclientsdk.model.User;
 
-import static org.kingapi.kingapiinterface.Utils.SignUtil.getSign;
+import static org.kingapi.kingapiclientsdk.Utils.SignUtil.getSign;
+
 
 /**
  * ClassName:KingApiClient
@@ -45,7 +41,7 @@ public class KingApiClient {
 
     }
 
-    public String postName(@RequestParam String name){
+    public String postName(String name){
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
         String content = HttpUtil.post("http://localhost:8123/api/name/post",paramMap);
@@ -65,7 +61,7 @@ public class KingApiClient {
         return hashmap;
     }
 
-    public String  restfulName(@RequestBody User user){
+    public String  restfulName(User user){
         String json = JSONUtil.toJsonStr(user);
         HttpResponse content = HttpRequest.post("http://localhost:8123/api/name/rest")
                 .charset(StandardCharsets.UTF_8)

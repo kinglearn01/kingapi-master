@@ -27,6 +27,10 @@ public class InterfaceInfoUpdateRequest implements Serializable {
      * 接口地址
      */
     private String url;
+    /**
+     * 请求参数
+     */
+    private String requestParams;
 
     /**
      * 请求头
@@ -49,5 +53,5 @@ public class InterfaceInfoUpdateRequest implements Serializable {
     private String method;
 
 
-
+    private static final long serialVersionUID = 1L;
 }

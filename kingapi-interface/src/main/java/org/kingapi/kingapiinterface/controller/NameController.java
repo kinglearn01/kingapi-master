@@ -1,7 +1,6 @@
 package org.kingapi.kingapiinterface.controller;
-
-import org.kingapi.kingapiinterface.Utils.SignUtil;
-import org.kingapi.kingapiinterface.model.User;
+import org.kingapi.kingapiclientsdk.Utils.SignUtil;
+import org.kingapi.kingapiclientsdk.model.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 public class NameController {
     @GetMapping("/")
     public String getName(String name, HttpServletRequest request){
-        String accessKey = request.getHeader("accessKey");
-        String secretKey = request.getHeader("secretKey");
-        if (!accessKey.equals("king")||!secretKey.equals("kinglearn")){
-            throw new RuntimeException("无权限");
-        }
         return "GET 你的名字是"+name;
     }
     @PostMapping("/post")

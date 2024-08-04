@@ -1,4 +1,4 @@
-package org.kingapi.kingapiinterface.model;
+package org.kingapi.kingapiclientsdk.model;
 
 import lombok.Data;
 

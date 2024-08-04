@@ -2,4 +2,7 @@ server:
   port: 8123
   servlet:
     context-path: /api
-
+kingapi:
+  client:
+    access-key: king
+    secret-key: kinglearn

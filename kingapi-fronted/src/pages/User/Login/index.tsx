@@ -103,11 +103,13 @@ const Login: React.FC = () => {
         ...values,
       });
       if (res.data) {
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        setInitialState({
-          loginUser: res.data
-        })
+        setTimeout(()=>{
+          const urlParams = new URL(window.location.href).searchParams;
+          history.push(urlParams.get('redirect') || '/');
+          setInitialState({
+            loginUser: res.data
+          })
+        },100);
       }
       return;
     } catch (error) {
@@ -138,7 +140,6 @@ const Login: React.FC = () => {
           }}
           logo={<img alt="logo" src="/logo.svg"/>}
           title="Ant Design"
-          subTitle={'Ant Design 是西湖区最具影响力的 Web 设计规范'}
           initialValues={{
             autoLogin: true,
           }}
