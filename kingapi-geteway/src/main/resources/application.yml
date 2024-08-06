@@ -16,3 +16,4 @@ logging:
      springframework:
        cloud:
          gateway: trace
+

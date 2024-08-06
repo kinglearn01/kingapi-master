@@ -24,6 +24,7 @@ import static org.kingapi.kingapiclientsdk.Utils.SignUtil.getSign;
 public class KingApiClient {
     private String accessKey;
     private String secretKey;
+    private static final String GATEWAY_HOST = "http://localhost:8090";
 
     public KingApiClient(String accessKey, String secretKey) {
         this.accessKey = accessKey;
@@ -34,7 +35,7 @@ public class KingApiClient {
         //POST请求
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
-        String content = HttpUtil.get("http://localhost:8123/api/name/",paramMap);
+        String content = HttpUtil.get(GATEWAY_HOST+"/api/name/",paramMap);
         System.out.println(content);
         return content;
 
@@ -44,7 +45,7 @@ public class KingApiClient {
     public String postName(String name){
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
-        String content = HttpUtil.post("http://localhost:8123/api/name/post",paramMap);
+        String content = HttpUtil.post(GATEWAY_HOST+"/api/name/post",paramMap);
         System.out.println(content);
         return content;
     }
@@ -63,7 +64,7 @@ public class KingApiClient {
 
     public String  restfulName(User user){
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse content = HttpRequest.post("http://localhost:8123/api/name/rest")
+        HttpResponse content = HttpRequest.post(GATEWAY_HOST+"/api/name/rest")
                 .charset(StandardCharsets.UTF_8)
                 .addHeaders(getHeaderMap(json))
                 .body(json)
