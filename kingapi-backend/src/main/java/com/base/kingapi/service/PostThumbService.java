@@ -2,7 +2,7 @@ package com.base.kingapi.service;
 
 import com.base.kingapi.model.entity.PostThumb;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.base.kingapi.model.entity.User;
+import org.example.model.entity.User;
 
 /**
  * 帖子点赞服务

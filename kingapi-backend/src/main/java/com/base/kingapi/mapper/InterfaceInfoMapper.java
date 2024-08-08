@@ -1,7 +1,8 @@
 package com.base.kingapi.mapper;
 
-import com.base.kingapi.model.entity.InterfaceInfo;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.example.model.entity.InterfaceInfo;
 
 /**
 * @author 13615

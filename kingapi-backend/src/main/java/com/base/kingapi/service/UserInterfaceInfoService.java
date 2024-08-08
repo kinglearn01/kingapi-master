@@ -1,7 +1,7 @@
 package com.base.kingapi.service;
 
-import com.base.kingapi.model.entity.UserInterfaceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.model.entity.UserInterfaceInfo;
 
 /**
 * @author 13615

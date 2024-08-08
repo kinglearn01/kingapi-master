@@ -26,25 +26,25 @@ public class NameController {
     }
     @PostMapping("/rest")
     public String restfulName(@RequestBody User user, HttpServletRequest request){
-        String accessKey = request.getHeader("accessKey");
-        String nonce = request.getHeader( "nonce");
-        String body = request.getHeader("body");
-        String timestamp = request.getHeader("timestamp");
-        String sign = request.getHeader("sign");
-        if (!accessKey.equals("king")){
-            throw new RuntimeException("无权限");
-        }
-        if (Long.parseLong(nonce)>10000){
-            throw new RuntimeException("无权限");
-        }
-        // todo 时间和当前时间不能超过五分钟
-//        if (timestamp){
-//
+//        String accessKey = request.getHeader("accessKey");
+//        String nonce = request.getHeader( "nonce");
+//        String body = request.getHeader("body");
+//        String timestamp = request.getHeader("timestamp");
+//        String sign = request.getHeader("sign");
+//        if (!accessKey.equals("king")){
+//            throw new RuntimeException("无权限");
 //        }
-        String serverSign = SignUtil.getSign(body, "kinglearn");
-        if (!sign.equals(serverSign)){
-            throw new RuntimeException("无权限");
-        }
+//        if (Long.parseLong(nonce)>10000){
+//            throw new RuntimeException("无权限");
+//        }
+//        // todo 时间和当前时间不能超过五分钟
+////        if (timestamp){
+////
+////        }
+//        String serverSign = SignUtil.getSign(body, "kinglearn");
+//        if (!sign.equals(serverSign)){
+//            throw new RuntimeException("无权限");
+//        }
 
         return "RESTFul 你的名字是"+user;
     }

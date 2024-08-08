@@ -1,14 +1,7 @@
 package com.base.kingapi.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.base.kingapi.model.dto.post.PostQueryRequest;
-import com.base.kingapi.model.entity.InterfaceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.base.kingapi.model.entity.Post;
-import com.base.kingapi.model.vo.PostVO;
-
-import javax.servlet.http.HttpServletRequest;
+import org.example.model.entity.InterfaceInfo;
 
 /**
 * @author 13615

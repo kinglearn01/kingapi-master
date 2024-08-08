@@ -1,7 +1,5 @@
 package com.base.kingapi.service.impl;
 
-import static com.base.kingapi.constant.UserConstant.USER_LOGIN_STATE;
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
@@ -12,7 +10,6 @@ import com.base.kingapi.constant.CommonConstant;
 import com.base.kingapi.exception.BusinessException;
 import com.base.kingapi.mapper.UserMapper;
 import com.base.kingapi.model.dto.user.UserQueryRequest;
-import com.base.kingapi.model.entity.User;
 import com.base.kingapi.model.enums.UserRoleEnum;
 import com.base.kingapi.model.vo.LoginUserVO;
 import com.base.kingapi.model.vo.UserVO;
@@ -21,14 +18,17 @@ import com.base.kingapi.utils.SqlUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.example.model.entity.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static com.base.kingapi.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户服务实现

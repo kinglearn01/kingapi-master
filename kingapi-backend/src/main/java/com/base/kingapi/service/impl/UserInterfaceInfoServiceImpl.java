@@ -1,13 +1,12 @@
 package com.base.kingapi.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.base.kingapi.common.ErrorCode;
 import com.base.kingapi.exception.BusinessException;
 import com.base.kingapi.mapper.UserInterfaceInfoMapper;
-import com.base.kingapi.model.entity.UserInterfaceInfo;
 import com.base.kingapi.service.UserInterfaceInfoService;
+import org.example.model.entity.UserInterfaceInfo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoMapper, UserInterfaceInfo>
-    implements UserInterfaceInfoService{
+    implements UserInterfaceInfoService {
 
     @Override
     public void validUserInterfaceInfo(UserInterfaceInfo userinterfaceInfo, boolean b) {
@@ -34,7 +33,7 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
     }
 
     @Override
-    public synchronized boolean invokeCount(long interfaceInfoId, long userId) {
+    public  boolean invokeCount(long interfaceInfoId, long userId) {
         if(interfaceInfoId<=0||userId<=0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -46,6 +45,10 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         return this.update(updateWrapper);
     }
 
+    @Override
+    public boolean save(UserInterfaceInfo entity) {
+        return super.save(entity);
+    }
 }
 
 

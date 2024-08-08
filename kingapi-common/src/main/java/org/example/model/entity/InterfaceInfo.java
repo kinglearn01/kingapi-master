@@ -1,4 +1,4 @@
-package com.base.kingapi.model.entity;
+package org.example.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;

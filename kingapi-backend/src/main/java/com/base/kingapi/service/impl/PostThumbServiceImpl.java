@@ -7,10 +7,11 @@ import com.base.kingapi.exception.BusinessException;
 import com.base.kingapi.mapper.PostThumbMapper;
 import com.base.kingapi.model.entity.Post;
 import com.base.kingapi.model.entity.PostThumb;
-import com.base.kingapi.model.entity.User;
 import com.base.kingapi.service.PostService;
 import com.base.kingapi.service.PostThumbService;
 import javax.annotation.Resource;
+
+import org.example.model.entity.User;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

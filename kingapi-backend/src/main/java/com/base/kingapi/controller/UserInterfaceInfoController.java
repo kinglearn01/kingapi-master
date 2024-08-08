@@ -15,12 +15,13 @@ import com.base.kingapi.exception.ThrowUtils;
 import com.base.kingapi.model.dto.userinterfaceinfo.UserInterfaceInfoAddRequest;
 import com.base.kingapi.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import com.base.kingapi.model.dto.userinterfaceinfo.UserInterfaceInfoUpdateRequest;
-import com.base.kingapi.model.entity.User;
-import com.base.kingapi.model.entity.UserInterfaceInfo;
 import com.base.kingapi.service.UserInterfaceInfoService;
 import com.base.kingapi.service.UserService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+
+import org.example.model.entity.User;
+import org.example.model.entity.UserInterfaceInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 

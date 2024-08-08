@@ -1,7 +1,9 @@
 package com.base.kingapi.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.base.kingapi.model.entity.User;
+import org.example.model.entity.User;
+
 
 /**
  * 用户数据库操作
@@ -11,7 +13,9 @@ import com.base.kingapi.model.entity.User;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+
 }
+
 
 
 

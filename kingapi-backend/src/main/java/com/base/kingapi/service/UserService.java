@@ -3,12 +3,12 @@ package com.base.kingapi.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.base.kingapi.model.dto.user.UserQueryRequest;
-import com.base.kingapi.model.entity.User;
 import com.base.kingapi.model.vo.LoginUserVO;
 import com.base.kingapi.model.vo.UserVO;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import org.example.model.entity.User;
 
 /**
  * 用户服务

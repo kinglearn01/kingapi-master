@@ -1,7 +1,8 @@
 package com.base.kingapi.service;
 
-import com.base.kingapi.model.entity.User;
 import javax.annotation.Resource;
+
+import org.example.model.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -99,7 +99,15 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.base.kingapi.controller
-kingapi:
-  client:
-    access-key: king
-    secret-key: kinglearn
+dubbo:
+  application:
+    name: dubbo-springboot-demo-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://localhost:8848
+
+
+
