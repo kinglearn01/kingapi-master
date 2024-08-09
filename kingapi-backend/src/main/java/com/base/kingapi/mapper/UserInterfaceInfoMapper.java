@@ -1,6 +1,7 @@
 package com.base.kingapi.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import java.util.List;
 import org.example.model.entity.UserInterfaceInfo;
 
 /**
@@ -10,7 +11,7 @@ import org.example.model.entity.UserInterfaceInfo;
 * @Entity com.base.kingapi.model.entity.UserInterfaceInfo
 */
 public interface UserInterfaceInfoMapper extends BaseMapper<UserInterfaceInfo> {
-
+    List<UserInterfaceInfo> listTopInvokeInterfaceInfo(int limit);
 }
 
 
